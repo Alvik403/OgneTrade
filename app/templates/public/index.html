@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+{% block title %}OgneTrade — гидрогелевые огнетушители ЯГЕЛЬ{% endblock %}
+{% block body %}
+<header class="site-header">  <div class="container header-inner">
+    <a class="logo" href="/">OgneTrade<span class="logo-domain">.ru</span></a>
+    <div class="contacts">
+      <a href="tel:{{ contacts.phone|replace(' ', '')|replace('(', '')|replace(')', '')|replace('-', '') }}">{{ contacts.phone }}</a>
+      <a href="mailto:{{ contacts.email }}">{{ contacts.email }}</a>
+      {% if contacts.address %}<span>{{ contacts.address }}</span>{% endif %}
+    </div>
+    <button type="button" class="btn sticky-cta" data-open-lead>Получить расчёт</button>
+  </div>
+</header>
+
+<main class="public-main">
+  <section class="sales-hero" id="top">
+    <div class="container hero-shell">
+      <div class="hero-copy">
+        <div class="eyebrow">OgneTrade · огнетушители ЯГЕЛЬ</div>
+        <h1>Гидрогелевые огнетушители для литий-ионных систем и электрооборудования</h1>
+        <p class="hero-lead">Подберём модель под ваш объект, подготовим счёт, сертификаты и закрывающие документы. Работаем с юрлицами по всей России.</p>
+        <ul class="hero-points">
+          <li>Безопасны для электроники — гидрогель не проводит ток</li>
+          <li>Модели для авто, офиса, склада и промышленности</li>
+          <li>Консультация и расчёт комплекта бесплатно</li>
+        </ul>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-light" data-open-lead>Получить расчёт</button>
+          <a class="btn btn-ghost" href="#products">Смотреть каталог</a>
+        </div>
+      </div>
+      <div class="hero-showcase" aria-hidden="true">
+        <div class="hero-showcase-glow"></div>
+        <div class="hero-showcase-card">
+          <img src="/static/images/products/yagel-6.png" alt="Огнетушитель гидрогелевый ЯГЕЛЬ">
+          <div class="hero-showcase-meta">
+            <strong>ЯГЕЛЬ</strong>
+            <span>гидрогелевая серия</span>
+          </div>
+          <div class="hero-volumes">
+            <span>1 л</span>
+            <span>6 л</span>
+            <span>45 л</span>
+            <span>200 л</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-strip">
+    <div class="container trust-grid">
+      <div><strong>24 часа</strong><span>доставка по городу</span></div>
+      <div><strong>Сертификаты</strong><span>на каждую позицию</span></div>
+      <div><strong>Юрлица</strong><span>счёт и документы</span></div>
+      <div><strong>Опт</strong><span>скидки от объёма</span></div>
+    </div>
+  </section>
+
+  <section class="category-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Подбор по объекту</span>
+        <h2>Быстро подберём огнетушители под вашу задачу</h2>
+      </div>
+      <div class="category-pills">
+        <button type="button" class="category-pill" data-open-lead data-object-type="Офис">Для офиса</button>
+        <button type="button" class="category-pill" data-open-lead data-object-type="Склад">Для склада</button>
+        <button type="button" class="category-pill" data-open-lead data-object-type="Серверная">Для электрооборудования</button>
+        <button type="button" class="category-pill" data-open-lead data-object-type="Автомобиль">Для автомобиля</button>
+        <button type="button" class="category-pill" data-open-lead data-object-type="Магазин">Для магазина</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="section-heading" id="products">
+      <span class="eyebrow">Каталог ЯГЕЛЬ</span>
+      <h2>Гидрогелевые огнетушители</h2>
+    </div>
+    {% if catalog_products %}
+    <div class="catalog-cards">
+      {% for product in catalog_products %}
+      <article class="product-widget" id="product-{{ product.id }}"
+        data-product-id="{{ product.id }}"
+        data-product-name="{{ product.title }}">
+        <div class="product-widget-head" role="button" tabindex="0"
+          aria-expanded="false" aria-controls="details-{{ product.id }}">
+          <div class="product-widget-media">
+            <img src="{{ product.image_url }}" alt="{{ product.title }}">
+          </div>
+          <div class="product-widget-summary">
+            <div class="card-topline">
+              <span class="product-badge">В наличии</span>
+              <span class="product-badge muted">Сертификат</span>
+            </div>
+            <h3>{{ product.title }}</h3>
+            <p>{{ product.description }}</p>
+          </div>
+        </div>
+        <div class="product-widget-details" id="details-{{ product.id }}" hidden>
+          <div class="product-meta">
+            {% if product.volume_liters %}<span>{{ product.volume_liters }} л</span>{% endif %}
+            {% if product.article %}<span class="product-article">Арт. {{ product.article }}</span>{% endif %}
+          </div>
+          {% if product.specs %}
+          <div class="product-block">
+            <h4>Характеристики</h4>
+            <dl class="spec-list">
+              {% for item in product.specs %}
+              <div class="spec-row">
+                <dt>{{ item.label }}</dt>
+                <dd>{{ item.value }}</dd>
+              </div>
+              {% endfor %}
+            </dl>
+          </div>
+          {% endif %}
+          <div class="product-block">
+            <h4>Описание</h4>
+            <p class="product-widget-desc">{{ product.long_description or product.description }}</p>
+          </div>
+        </div>
+        <div class="product-widget-actions">
+          <button type="button" class="btn btn-ghost-soft" data-toggle-product>Подробнее</button>
+          <button type="button" class="btn btn-order" data-open-lead
+            data-product-id="{{ product.id }}"
+            data-product-name="{{ product.title }}">Заказать</button>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <section class="info-block">
+      <h2>OgneTrade — официальный поставщик гидрогелевых огнетушителей</h2>
+      <ol class="info-steps">
+        <li class="info-step">
+          <span class="info-step-num">1</span>
+          <p class="info-step-text">Подберём модель под ваш объект и задачу</p>
+        </li>
+        <li class="info-step">
+          <span class="info-step-num">2</span>
+          <p class="info-step-text">Выставим счёт и приложим сертификаты</p>
+        </li>
+        <li class="info-step">
+          <span class="info-step-num">3</span>
+          <p class="info-step-text">Подготовим закрывающие документы после поставки</p>
+        </li>
+        <li class="info-step">
+          <span class="info-step-num">4</span>
+          <p class="info-step-text">Работаем с юрлицами по всей России</p>
+        </li>
+      </ol>
+    </section>
+  </div>
+  <section class="process-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Как работаем</span>
+        <h2>От заявки до документов — без лишней переписки</h2>
+      </div>
+      <div class="process-grid">
+        <div class="process-card"><span>01</span><h3>Заявка</h3><p>Вы оставляете телефон, объект и площадь.</p></div>
+        <div class="process-card"><span>02</span><h3>Подбор</h3><p>Менеджер уточняет задачу и подбирает комплект.</p></div>
+        <div class="process-card"><span>03</span><h3>КП и счёт</h3><p>Отправляем цену, сроки, сертификаты и счёт.</p></div>
+        <div class="process-card"><span>04</span><h3>Доставка</h3><p>Привозим оборудование и закрывающие документы.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="container">
+      <div class="section-heading faq-heading">
+        <span class="eyebrow">FAQ</span>
+        <h2>Частые вопросы перед покупкой</h2>
+        <p>Коротко о выборе модели, оплате и подборе комплекта — раскройте нужный пункт.</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span class="faq-num">01</span>
+            <span class="faq-title">Чем ЯГЕЛЬ отличается от порошкового огнетушителя?</span>
+            <span class="faq-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>Гидрогель не проводит ток, безопасен для электроники и эффективен при возгорании литий-ионных аккумуляторов. В отличие от порошка, не портит оборудование и проще убирается после тушения.</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span class="faq-num">02</span>
+            <span class="faq-title">Какую модель выбрать — 1, 6, 45 или 200 л?</span>
+            <span class="faq-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-answer">
+            <ul class="faq-bullets">
+              <li><strong>1 л</strong> — автомобиль, квартира, небольшой офис</li>
+              <li><strong>6 л</strong> — офис, магазин, серверная</li>
+              <li><strong>45 л</strong> — склад, производство, парковка</li>
+              <li><strong>200 л</strong> — крупные промышленные объекты</li>
+            </ul>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span class="faq-num">03</span>
+            <span class="faq-title">Можно оплатить по счёту?</span>
+            <span class="faq-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>Да. Работаем с юрлицами: выставляем счёт, прикладываем сертификаты и готовим закрывающие документы после поставки.</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span class="faq-num">04</span>
+            <span class="faq-title">Если я не знаю количество?</span>
+            <span class="faq-chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-answer">
+            <p>Укажите тип объекта и площадь в заявке — менеджер рассчитает ориентировочный комплект и предложит оптимальный вариант по нормам.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <span>© OgneTrade — ognetrade.ru</span>
+    <div class="footer-links">
+      <a href="/privacy">Политика конфиденциальности</a>
+      <button type="button" class="footer-link-btn" data-open-lead>Получить расчёт</button>
+    </div>
+  </div>
+</footer>
+
+<div class="modal lead-modal-wrap" id="leadModal" aria-hidden="true">
+  <div class="modal-content lead-modal">
+    <div class="lead-modal-header">
+      <div class="lead-modal-head">
+        <h2 id="leadModalTitle">Заявка на расчёт</h2>
+        <p class="lead-modal-sub" id="leadModalSub">Оставьте контакты — менеджер подберёт комплект</p>
+      </div>
+      <button type="button" class="modal-close lead-modal-close" data-close-modal aria-label="Закрыть">&times;</button>
+    </div>
+    <div class="lead-product-chip hidden" id="leadProductChip"></div>
+    <form id="leadForm" class="lead-modal-form">
+      <div class="hp-field">
+        <label>Website</label>
+        <input type="text" name="website" tabindex="-1" autocomplete="off">
+      </div>
+      <input type="hidden" id="product_id" name="product_id">
+      <input type="hidden" id="product_name" name="product_name">
+      <div class="lead-form-grid">
+        <div class="form-group">
+          <label for="name">Имя</label>
+          <input type="text" id="name" name="name" required minlength="2" placeholder="Как к вам обращаться">
+        </div>
+        <div class="form-group">
+          <label for="phone">Телефон</label>
+          <input type="tel" id="phone" name="phone" required placeholder="+7 (999) 000-00-00">
+        </div>
+        <div class="form-group form-group-full">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Для отправки КП">
+        </div>
+        <div class="form-group">
+          <label for="object_type">Объект</label>
+          <select id="object_type" name="object_type">
+            <option value="">Выберите</option>
+            <option>Офис</option>
+            <option>Склад</option>
+            <option>Магазин</option>
+            <option>Серверная</option>
+            <option>Производство</option>
+            <option>Автомобиль</option>
+            <option>Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="area">Площадь, м²</label>
+          <input type="number" id="area" name="area" min="1" placeholder="120">
+        </div>
+        <div class="form-group">
+          <label for="quantity">Количество</label>
+          <input type="text" id="quantity" name="quantity" placeholder="Подберём">
+        </div>
+        <div class="form-group">
+          <label for="need_delivery">Доставка</label>
+          <select id="need_delivery" name="need_delivery">
+            <option value="">Не нужна</option>
+            <option>Нужна доставка</option>
+            <option>Доставка и монтаж</option>
+            <option>Самовывоз</option>
+          </select>
+        </div>
+        <div class="form-group form-group-full">
+          <label for="comment">Комментарий</label>
+          <textarea id="comment" name="comment" rows="2" placeholder="Адрес, сроки, пожелания"></textarea>
+        </div>
+      </div>
+      <div class="lead-modal-footer">
+        <label class="privacy-check lead-privacy">
+          <input type="checkbox" name="privacy" value="1">
+          <span>Согласен с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
+        </label>
+        <button type="submit" class="btn btn-submit lead-submit">Отправить</button>
+      </div>
+      <div class="form-message" id="formMessage"></div>
+    </form>
+  </div>
+</div>
+
+<script>window.CSRF_TOKEN = {{ csrf_token|tojson }};</script>
+<script src="/static/js/public.js?v={{ static_v }}"></script>
+{% endblock %}

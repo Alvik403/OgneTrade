@@ -1,0 +1,174 @@
+{% extends "admin/layout.html" %}
+{% block page_title %}Настройки{% endblock %}
+{% block admin_content %}
+<div class="admin-card settings-card">
+  <div class="settings-page-head">
+    <h1>Настройки</h1>
+    <p class="settings-page-desc">Контакты сайта, уведомления и доступ в админку</p>
+  </div>
+
+  <div class="settings-stack">
+    <section class="settings-block" id="settings-site" data-accent="site">
+      <button type="button" class="settings-block-trigger" aria-expanded="false">
+        <span class="settings-block-icon" aria-hidden="true"></span>
+        <span class="settings-block-meta">
+          <strong>Настройка сайта</strong>
+          <span>Контакты и уведомления</span>
+        </span>
+        <span class="settings-block-arrow" aria-hidden="true"></span>
+      </button>
+      <div class="settings-block-content" hidden>
+        <div class="settings-block-inner">
+          <form id="settingsForm">
+            <div class="settings-panes">
+              <section class="settings-pane" id="settings-contacts">
+                <button type="button" class="settings-pane-trigger" aria-expanded="false">
+                  <span>Контакты на сайте</span>
+                  <span class="settings-pane-arrow" aria-hidden="true"></span>
+                </button>
+                <div class="settings-pane-content" hidden>
+                  <div class="settings-fields">
+                    <div class="settings-field">
+                      <label class="settings-label" for="phone">Телефон</label>
+                      <input class="settings-input" name="phone" id="phone" placeholder="+7 (495) 123-45-67">
+                    </div>
+                    <div class="settings-field">
+                      <label class="settings-label" for="email">Email</label>
+                      <input class="settings-input" name="email" id="email" type="email" placeholder="info@example.ru">
+                    </div>
+                    <div class="settings-field settings-field-wide">
+                      <label class="settings-label" for="address">Адрес</label>
+                      <input class="settings-input" name="address" id="address" placeholder="г. Москва, ...">
+                    </div>
+                    <div class="settings-field">
+                      <label class="settings-label" for="whatsapp">WhatsApp</label>
+                      <input class="settings-input" name="whatsapp" id="whatsapp" placeholder="+7 ...">
+                    </div>
+                    <div class="settings-field">
+                      <label class="settings-label" for="site_telegram">Telegram</label>
+                      <input class="settings-input" name="telegram" id="site_telegram" placeholder="@username">
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="settings-pane" id="settings-notify">
+                <button type="button" class="settings-pane-trigger" aria-expanded="false">
+                  <span>Уведомления</span>
+                  <span class="settings-pane-arrow" aria-hidden="true"></span>
+                </button>
+                <div class="settings-pane-content" hidden>
+                  <div class="settings-notify-grid">
+                    <div class="settings-notify-card">
+                      <h3>Email (SMTP)</h3>
+                      <div class="settings-fields">
+                        <div class="settings-field">
+                          <label class="settings-label" for="smtp_host">SMTP Host</label>
+                          <input class="settings-input" name="smtp_host" id="smtp_host" placeholder="smtp.example.ru">
+                        </div>
+                        <div class="settings-field">
+                          <label class="settings-label" for="smtp_port">SMTP Port</label>
+                          <input class="settings-input" name="smtp_port" id="smtp_port" type="number" placeholder="587">
+                        </div>
+                        <div class="settings-field">
+                          <label class="settings-label" for="smtp_user">SMTP User</label>
+                          <input class="settings-input" name="smtp_user" id="smtp_user">
+                        </div>
+                        <div class="settings-field">
+                          <label class="settings-label" for="smtp_password">SMTP Password</label>
+                          <input class="settings-input" name="smtp_password" id="smtp_password" type="password" autocomplete="new-password">
+                        </div>
+                        <div class="settings-field settings-field-wide">
+                          <label class="settings-label" for="smtp_from">Отправитель (From)</label>
+                          <input class="settings-input" name="smtp_from" id="smtp_from" placeholder="noreply@example.ru">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="settings-notify-card">
+                      <h3>Telegram</h3>
+                      <div class="settings-fields">
+                        <div class="settings-field settings-field-wide">
+                          <label class="settings-label" for="telegram_bot_token">Bot Token</label>
+                          <input class="settings-input" name="telegram_bot_token" id="telegram_bot_token" type="password" autocomplete="new-password">
+                        </div>
+                        <div class="settings-field">
+                          <label class="settings-label" for="telegram_chat_id">Chat ID</label>
+                          <input class="settings-input" name="telegram_chat_id" id="telegram_chat_id">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div class="settings-actions">
+              <button type="submit" class="btn">Сохранить настройки</button>
+              <button type="button" class="btn btn-outline" id="testNotify">Тест уведомления</button>
+            </div>
+            <div class="form-message settings-message" id="settingsMsg"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-block" id="settings-users" data-accent="users">
+      <button type="button" class="settings-block-trigger" aria-expanded="false">
+        <span class="settings-block-icon" aria-hidden="true"></span>
+        <span class="settings-block-meta">
+          <strong>Добавление пользователей</strong>
+          <span>Менеджеры и администраторы</span>
+        </span>
+        <span class="settings-block-arrow" aria-hidden="true"></span>
+      </button>
+      <div class="settings-block-content" hidden>
+        <div class="settings-block-inner">
+          <form id="userForm" class="settings-fields users-create-form">
+            <div class="settings-field">
+              <label class="settings-label" for="user_email">Email</label>
+              <input class="settings-input" type="email" id="user_email" name="email" required placeholder="manager@example.ru">
+            </div>
+            <div class="settings-field">
+              <label class="settings-label" for="user_full_name">Имя</label>
+              <input class="settings-input" type="text" id="user_full_name" name="full_name" required placeholder="Иван Менеджеров">
+            </div>
+            <div class="settings-field">
+              <label class="settings-label" for="user_password">Пароль</label>
+              <input class="settings-input" type="password" id="user_password" name="password" required minlength="8" placeholder="мин. 8 символов">
+            </div>
+            <div class="settings-field">
+              <label class="settings-label" for="user_role">Роль</label>
+              <select class="settings-input" id="user_role" name="role">
+                <option value="manager">Менеджер</option>
+                <option value="super_admin">Администратор</option>
+              </select>
+            </div>
+            <div class="settings-field users-create-action">
+              <button class="btn" type="submit">Добавить пользователя</button>
+            </div>
+          </form>
+          <div class="form-message settings-message" id="usersMsg"></div>
+
+          <div class="users-list-wrap">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Пользователь</th>
+                  <th>Роль</th>
+                  <th>Статус</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable">
+                <tr><td colspan="3" class="users-empty">Загрузка...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/admin-settings.js?v={{ static_v }}"></script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "admin/layout.html" %}
+{% block page_title %}Аналитика{% endblock %}
+{% block admin_content %}
+<div class="admin-card analytics-toolbar">
+  <div class="analytics-toolbar-inner">
+    <div>
+      <h1>Аналитика</h1>
+      <p class="leads-subtitle" id="analyticsRangeLabel">Динамика за последние 7 дней</p>
+    </div>
+    <div class="analytics-controls">
+      <div class="period-pills" id="periodPills">
+        <button type="button" class="period-pill" data-period="6h">6 ч</button>
+        <button type="button" class="period-pill" data-period="12h">12 ч</button>
+        <button type="button" class="period-pill" data-period="24h">24 ч</button>
+        <button type="button" class="period-pill active" data-period="7d">7 д</button>
+        <button type="button" class="period-pill" data-period="30d">30 д</button>
+        <button type="button" class="period-pill" data-period="90d">90 д</button>
+      </div>
+      <button class="btn btn-outline" type="button" id="reloadAnalytics">Обновить</button>
+    </div>
+  </div>
+</div>
+
+<div class="analytics-kpi-grid" id="analyticsKpi"></div>
+
+<div class="analytics-grid">
+  <div class="admin-card analytics-chart-card">
+    <div class="card-heading">
+      <h2>Динамика</h2>
+      <span class="chart-hint" id="chartGranularityHint">по дням</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="trafficChart"></canvas>
+    </div>
+  </div>
+
+  <div class="admin-card analytics-side-card">
+    <h2>Воронка</h2>
+    <div class="funnel-list" id="funnelStats"></div>
+    <h2 style="margin-top: 1.5rem;">Топ товаров</h2>
+    <div class="top-products-list" id="topProductsList"></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="/static/js/admin-analytics.js"></script>
+{% endblock %}

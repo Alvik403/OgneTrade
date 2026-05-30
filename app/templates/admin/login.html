@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Вход — {{ app_name }}{% endblock %}
+{% block body %}
+<div class="login-page">
+  <div class="login-card">
+    <h1>{{ app_name }}</h1>
+    <p style="text-align:center;color:#6b7280;margin-bottom:1.5rem;">Панель менеджера</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+    <button type="submit" class="btn" style="width:100%;">Войти</button>
+    <div class="form-message" id="loginMessage"></div>
+    <p style="margin-top:1.5rem;font-size:0.85rem;color:#6b7280;text-align:center;">
+      Dev-доступ:<br>
+      <strong>admin@example.ru</strong> / admin12345<br>
+      <strong>manager@example.ru</strong> / manager12345
+    </p>
+  </form>
+  </div>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('loginMessage');
+  const fd = new FormData(e.target);
+  try {
+    const res = await fetch('/api/admin/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ email: fd.get('email'), password: fd.get('password') }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Ошибка входа');
+    window.location.href = '{{ admin_prefix }}/dashboard';
+  } catch (err) {
+    msg.className = 'form-message error';
+    msg.textContent = err.message;
+  }
+});
+</script>
+{% endblock %}

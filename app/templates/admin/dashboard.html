@@ -1,0 +1,30 @@
+{% extends "admin/layout.html" %}
+{% block page_title %}Dashboard{% endblock %}
+{% block admin_content %}
+<div class="admin-card">
+  <h1>Dashboard</h1>
+  <p>Обзор за сегодня и последние 7 дней</p>
+</div>
+<div class="kpi-grid" id="kpiGrid"></div>
+<div class="admin-card">
+  <h2>Топ карточек (клики)</h2>
+  <ul id="topProducts"></ul>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+(async () => {
+  const res = await adminFetch('/api/admin/analytics/overview?days=7');
+  const data = await res.json();
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi"><div class="kpi-value">${data.views_today}</div><div class="kpi-label">Просмотры сегодня</div></div>
+    <div class="kpi"><div class="kpi-value">${data.clicks_today}</div><div class="kpi-label">Клики сегодня</div></div>
+    <div class="kpi"><div class="kpi-value">${data.leads_today}</div><div class="kpi-label">Заявки сегодня</div></div>
+    <div class="kpi"><div class="kpi-value">${data.conversion_rate}%</div><div class="kpi-label">Конверсия (7д)</div></div>
+    <div class="kpi"><div class="kpi-value">${data.new_leads_count}</div><div class="kpi-label">Новых сделок</div></div>`;
+  document.getElementById('topProducts').innerHTML = (data.top_products || [])
+    .map(p => `<li><strong>${p.title}</strong> — ${p.clicks} кликов</li>`).join('') || '<li>Нет данных</li>';
+})();
+</script>
+{% endblock %}

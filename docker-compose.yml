@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: lids
+      POSTGRES_PASSWORD: lids
+      POSTGRES_DB: lids
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lids -d lids"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://lids:lids@db:5432/lids
+      SECRET_KEY: change-me-in-production-use-long-random-string
+      IP_HASH_SALT: docker-ip-salt-change-me
+      CSRF_SECRET: docker-csrf-secret-change-me
+      DEBUG: "false"
+      COOKIE_SECURE: "false"
+      APP_NAME: Огнетушители
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+volumes:
+  pgdata:

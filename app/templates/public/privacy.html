@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Политика конфиденциальности — OgneTrade{% endblock %}
+{% block body %}
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="/">OgneTrade</a>
+    <a class="btn" href="/">На главную</a>
+  </div>
+</header>
+<main class="public-main">
+  <section class="section-white">
+    <div class="container legal-page">
+      <h1>Политика конфиденциальности</h1>
+      <p>Настоящая политика описывает порядок обработки персональных данных на сайте {{ site_url }} и ognetrade.ru.</p>
+      <h2>Какие данные мы собираем</h2>
+      <ul>
+        <li>Имя и контактные данные (телефон, e-mail), которые вы указываете в форме заказа или заявки.</li>
+        <li>Информацию о выбранном продукте и комментарии к заявке.</li>
+        <li>Технические данные посещения (обезличенный IP, referrer, user-agent) для аналитики.</li>
+      </ul>
+      <h2>Для чего используются данные</h2>
+      <ul>
+        <li>Обработка заявок и связь с вами по телефону или e-mail.</li>
+        <li>Подготовка коммерческого предложения, счёта и документов.</li>
+        <li>Улучшение работы сайта и качества обслуживания.</li>
+      </ul>
+      <h2>Передача третьим лицам</h2>
+      <p>Мы не передаём персональные данные третьим лицам, за исключением случаев, предусмотренных законодательством РФ.</p>
+      <h2>Контакты</h2>
+      <p>По вопросам обработки данных: <a href="mailto:{{ contacts.email }}">{{ contacts.email }}</a>, тел. <a href="tel:{{ contacts.phone|replace(' ', '')|replace('(', '')|replace(')', '')|replace('-', '') }}">{{ contacts.phone }}</a>.</p>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <span>© OgneTrade — ognetrade.ru</span>
+    <a href="/">Главная</a>
+  </div>
+</footer>
+{% endblock %}

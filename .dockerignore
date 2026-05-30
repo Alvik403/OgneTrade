@@ -1,0 +1,13 @@
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+*.db
+lids.db
+.env
+.git
+.cursor
+.pytest_cache
+.mypy_cache
+pgdata

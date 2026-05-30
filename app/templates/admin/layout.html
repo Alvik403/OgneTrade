@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{% block page_title %}Админка{% endblock %} — {{ app_name }}{% endblock %}
+{% block head %}
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+{% endblock %}
+{% block body %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="brand">{{ app_name }}</div>
+    <ul class="admin-nav">
+      <li>
+        <a href="{{ admin_prefix }}/clients" class="{% if page == 'clients' %}active{% endif %}">
+          Заявки <span class="badge hidden" id="newLeadsBadge">0</span>
+        </a>
+      </li>
+      <li><a href="{{ admin_prefix }}/analytics" class="{% if page == 'analytics' %}active{% endif %}">Аналитика</a></li>
+      {% if user.role == 'super_admin' %}
+      <li><a href="{{ admin_prefix }}/settings" class="{% if page == 'settings' %}active{% endif %}">Настройки</a></li>
+      {% endif %}
+      <li><a href="#" id="logoutLink">Выход</a></li>
+    </ul>
+  </aside>
+  <main class="admin-main">
+    {% block admin_content %}{% endblock %}
+  </main>
+</div>
+
+<script>
+window.ADMIN_PREFIX = {{ admin_prefix|tojson }};
+window.CURRENT_USER = {{ {'id': user.id, 'role': user.role, 'full_name': user.full_name}|tojson }};
+
+function getCsrf() {
+  const m = document.cookie.match(/csrf_token=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : '';
+}
+
+async function adminFetch(url, options = {}) {
+  const headers = { ...(options.headers || {}), 'X-CSRF-Token': getCsrf() };
+  if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+    options.body = JSON.stringify(options.body);
+  }
+  const res = await fetch(url, { ...options, headers, credentials: 'same-origin' });
+  if (res.status === 401) {
+    window.location.href = ADMIN_PREFIX + '/login';
+    throw new Error('Unauthorized');
+  }
+  return res;
+}
+
+document.getElementById('logoutLink')?.addEventListener('click', async (e) => {
+  e.preventDefault();
+  await adminFetch('/api/admin/auth/logout', { method: 'POST' });
+  window.location.href = ADMIN_PREFIX + '/login';
+});
+
+async function refreshNewLeadsBadge() {
+  try {
+    const res = await adminFetch('/api/admin/leads/counts');
+    if (!res.ok) return;
+    const data = await res.json();
+    const badge = document.getElementById('newLeadsBadge');
+    if (!badge) return;
+    const count = data.unread || 0;
+    badge.textContent = count;
+    badge.classList.toggle('hidden', count === 0);
+  } catch (_) {}
+}
+refreshNewLeadsBadge();
+setInterval(refreshNewLeadsBadge, 30000);
+</script>
+{% block scripts %}{% endblock %}
+{% endblock %}

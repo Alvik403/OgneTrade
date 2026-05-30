@@ -1,0 +1,88 @@
+{% extends "admin/layout.html" %}
+
+{% block page_title %}Заявки{% endblock %}
+
+{% block admin_content %}
+
+<div class="admin-card leads-card">
+
+  <div class="leads-header">
+
+    <div>
+
+      <h1>Заявки и клиенты</h1>
+
+      <p class="leads-subtitle">Нажмите на заявку, чтобы увидеть данные клиента</p>
+
+    </div>
+
+    <button class="btn btn-outline" id="reloadClients" type="button">Обновить</button>
+
+  </div>
+
+
+
+  <div class="leads-toolbar">
+
+    <div class="leads-search-group leads-search-combobox">
+
+      <label class="search-label" for="clientSearch">Поиск</label>
+
+      <div class="search-combobox-wrap">
+
+        <input type="search" id="clientSearch" class="leads-search-input" placeholder="Имя, телефон или email" autocomplete="off">
+
+        <div class="search-suggestions hidden" id="searchSuggestions"></div>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="leads-product-filter">
+
+      <span class="search-label">Товары</span>
+
+      <ul class="product-filter-list" id="productFilterList">
+
+        <li><button type="button" class="product-filter-item active" data-product="">Все</button></li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="leads-tabs" id="readTabs">
+
+    <button type="button" class="leads-tab active" data-read="">Все</button>
+
+    <button type="button" class="leads-tab" data-read="false">
+
+      Непрочитанные <span class="badge" id="unreadTabBadge">0</span>
+
+    </button>
+
+    <button type="button" class="leads-tab" data-read="true">Прочитанные <span class="badge" id="readTabBadge">0</span></button>
+
+  </div>
+
+
+
+  <div id="leadsContainer"></div>
+
+  <p class="empty-state hidden" id="leadsEmpty">Заявок пока нет</p>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="/static/js/admin-clients.js"></script>
+
+{% endblock %}
+
