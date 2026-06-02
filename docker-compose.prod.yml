@@ -18,6 +18,11 @@ services:
   app:
     build: .
     environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-lids}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-lids}
       DATABASE_URL: postgresql://${POSTGRES_USER:-lids}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-lids}
       SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY}
       IP_HASH_SALT: ${IP_HASH_SALT:?Set IP_HASH_SALT}
@@ -26,7 +31,7 @@ services:
       ENVIRONMENT: production
       COOKIE_SECURE: "true"
       SITE_URL: ${SITE_URL:-https://ognetrade.online}
-      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-ognetrade.online,ognetrade.ru,www.ognetrade.ru}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-ognetrade.ru,www.ognetrade.ru,localhost,127.0.0.1}
       APP_NAME: ${APP_NAME:-OgneTrade}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}

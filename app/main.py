@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from fastapi import APIRouter, FastAPI, Request
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
@@ -9,6 +10,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from app.limiter import limiter
+from app.middleware.head_method import HeadMethodMiddleware
 from app.config import get_settings
 from app.database import init_db
 from app.routers import pages
@@ -24,6 +26,9 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 if settings.environment == "production":
     allowed = [host.strip() for host in settings.allowed_hosts.split(",") if host.strip()]
+    for internal_host in ("localhost", "127.0.0.1"):
+        if internal_host not in allowed:
+            allowed.append(internal_host)
     if allowed:
         app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed)
 
@@ -71,5 +76,14 @@ def on_startup():
 
 
 @app.get("/health")
+@app.head("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse(static_dir / "favicon.svg", media_type="image/svg+xml")
+
+
+app = HeadMethodMiddleware(app)
