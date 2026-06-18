@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
+from app.catalog_data import SHOWCASE_EXTRA
 from app.config import get_settings
 from app.database import Product, User, get_db
 from app.dependencies import get_current_user_optional
@@ -15,7 +16,10 @@ router = APIRouter(tags=["pages"])
 settings = get_settings()
 templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent.parent / "templates"))
 _static_root = Path(__file__).resolve().parent.parent / "static"
-templates.env.globals["static_v"] = int((_static_root / "css" / "theme.css").stat().st_mtime)
+templates.env.globals["static_v"] = max(
+    int((_static_root / "css" / "theme.css").stat().st_mtime),
+    int((_static_root / "favicon.svg").stat().st_mtime),
+)
 
 
 def _admin_context(request: Request, user: User | None, page: str, **extra):
@@ -50,6 +54,7 @@ def index(
             "request": request,
             "contacts": contacts.model_dump(),
             "catalog_products": catalog_products,
+            "showcase_extra": SHOWCASE_EXTRA,
             "csrf_token": csrf,
             "site_url": settings.site_url,
         },

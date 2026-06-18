@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block title %}OgneTrade — гидрогелевые огнетушители ЯГЕЛЬ{% endblock %}
 {% block body %}
 <header class="site-header">  <div class="container header-inner">
     <a class="logo" href="/">OgneTrade<span class="logo-domain">.ru</span></a>
@@ -32,7 +31,7 @@
       <div class="hero-showcase" aria-hidden="true">
         <div class="hero-showcase-glow"></div>
         <div class="hero-showcase-card">
-          <img src="/static/images/products/yagel-6.png" alt="Огнетушитель гидрогелевый ЯГЕЛЬ">
+          <img src="/static/images/products/yagel-6.jpg" alt="Огнетушитель гидрогелевый ЯГЕЛЬ">
           <div class="hero-showcase-meta">
             <strong>ЯГЕЛЬ</strong>
             <span>гидрогелевая серия</span>
@@ -73,65 +72,78 @@
     </div>
   </section>
 
-  <div class="container">
-    <div class="section-heading" id="products">
-      <span class="eyebrow">Каталог ЯГЕЛЬ</span>
-      <h2>Гидрогелевые огнетушители</h2>
+  <section class="product-carousel-section" id="products">
+    <div class="container carousel-head">
+      <div class="section-heading carousel-heading">
+        <span class="eyebrow">Каталог</span>
+        <h2>Огнетушители, Fire Ball и СИЗ</h2>
+        <p>Лента прокручивается автоматически — зажмите и перетащите, чтобы листать вручную</p>
+      </div>
+      <div class="carousel-head-actions">
+        <button type="button" class="btn btn-outline" data-open-lead data-form-mode="project">Заявка на проект СПС</button>
+      </div>
     </div>
-    {% if catalog_products %}
-    <div class="catalog-cards">
-      {% for product in catalog_products %}
-      <article class="product-widget" id="product-{{ product.id }}"
-        data-product-id="{{ product.id }}"
-        data-product-name="{{ product.title }}">
-        <div class="product-widget-head" role="button" tabindex="0"
-          aria-expanded="false" aria-controls="details-{{ product.id }}">
-          <div class="product-widget-media">
-            <img src="{{ product.image_url }}" alt="{{ product.title }}">
-          </div>
-          <div class="product-widget-summary">
-            <div class="card-topline">
-              <span class="product-badge">В наличии</span>
-              <span class="product-badge muted">Сертификат</span>
-            </div>
-            <h3>{{ product.title }}</h3>
-            <p>{{ product.description }}</p>
-          </div>
-        </div>
-        <div class="product-widget-details" id="details-{{ product.id }}" hidden>
-          <div class="product-meta">
-            {% if product.volume_liters %}<span>{{ product.volume_liters }} л</span>{% endif %}
-            {% if product.article %}<span class="product-article">Арт. {{ product.article }}</span>{% endif %}
-          </div>
-          {% if product.specs %}
-          <div class="product-block">
-            <h4>Характеристики</h4>
-            <dl class="spec-list">
-              {% for item in product.specs %}
-              <div class="spec-row">
-                <dt>{{ item.label }}</dt>
-                <dd>{{ item.value }}</dd>
-              </div>
-              {% endfor %}
-            </dl>
-          </div>
-          {% endif %}
-          <div class="product-block">
-            <h4>Описание</h4>
-            <p class="product-widget-desc">{{ product.long_description or product.description }}</p>
-          </div>
-        </div>
-        <div class="product-widget-actions">
-          <button type="button" class="btn btn-ghost-soft" data-toggle-product>Подробнее</button>
-          <button type="button" class="btn btn-order" data-open-lead
-            data-product-id="{{ product.id }}"
-            data-product-name="{{ product.title }}">Заказать</button>
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-    {% endif %}
 
+    <div class="product-carousel-viewport" id="productCarouselViewport">
+      <div class="product-carousel-track" id="productCarouselTrack">
+        {% for _copy in range(2) %}
+          {% for product in catalog_products %}
+          <article class="carousel-card" data-carousel-item
+            data-product-id="{{ product.id }}"
+            data-product-name="{{ product.title }}">
+            <div class="carousel-card-media">
+              <img src="{{ product.image_url }}" alt="{{ product.title }}" loading="lazy">
+            </div>
+            <div class="carousel-card-body">
+              <div class="card-topline">
+                <span class="product-badge">ЯГЕЛЬ</span>
+                {% if product.volume_liters %}<span class="product-badge muted">{{ product.volume_liters }} л</span>{% endif %}
+              </div>
+              <h3>{{ product.title }}</h3>
+              <p>{{ product.description }}</p>
+              {% if product.price_from %}
+              <div class="carousel-price">от {{ "{:,.0f}".format(product.price_from|float).replace(",", " ") }} ₽</div>
+              {% endif %}
+              <button type="button" class="btn btn-sm carousel-order" data-open-lead
+                data-product-id="{{ product.id }}"
+                data-product-name="{{ product.title }}">Заказать</button>
+            </div>
+          </article>
+          {% endfor %}
+          {% for item in showcase_extra %}
+          <article class="carousel-card carousel-card-extra" data-carousel-item
+            data-product-name="{{ item.title }}">
+            <div class="carousel-card-media">
+              <img src="{{ item.image_url }}" alt="{{ item.title }}" loading="lazy">
+            </div>
+            <div class="carousel-card-body">
+              <div class="card-topline">
+                <span class="product-badge">{{ item.category_label }}</span>
+              </div>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              {% if item.price_from %}
+              <div class="carousel-price">от {{ "{:,.0f}".format(item.price_from|float).replace(",", " ") }} ₽</div>
+              {% endif %}
+              <button type="button" class="btn btn-sm carousel-order" data-open-lead
+                data-product-name="{{ item.title }}">Заказать</button>
+            </div>
+          </article>
+          {% endfor %}
+          <article class="carousel-card carousel-card-project" data-carousel-item>
+            <div class="carousel-card-body carousel-card-body-project">
+              <span class="product-badge">Проект</span>
+              <h3>Встроенные системы пожаротушения</h3>
+              <p>Проектирование, монтаж и ПНР: АУПТ, СОУЭ, СПС, газовое и порошковое тушение под ваш объект.</p>
+              <button type="button" class="btn btn-light carousel-order" data-open-lead data-form-mode="project">Обсудить проект</button>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
     <section class="info-block">
       <h2>OgneTrade — официальный поставщик гидрогелевых огнетушителей</h2>
       <ol class="info-steps">
@@ -247,14 +259,19 @@
       <button type="button" class="modal-close lead-modal-close" data-close-modal aria-label="Закрыть">&times;</button>
     </div>
     <div class="lead-product-chip hidden" id="leadProductChip"></div>
+    <div class="lead-form-tabs" role="tablist" aria-label="Тип заявки">
+      <button type="button" class="lead-form-tab active" role="tab" aria-selected="true" data-form-mode="product">Товар / расчёт</button>
+      <button type="button" class="lead-form-tab" role="tab" aria-selected="false" data-form-mode="project">Проект СПС</button>
+    </div>
     <form id="leadForm" class="lead-modal-form">
+      <input type="hidden" id="lead_form_mode" name="form_mode" value="product">
       <div class="hp-field">
         <label>Website</label>
         <input type="text" name="website" tabindex="-1" autocomplete="off">
       </div>
       <input type="hidden" id="product_id" name="product_id">
       <input type="hidden" id="product_name" name="product_name">
-      <div class="lead-form-grid">
+      <div class="lead-form-grid lead-form-contacts">
         <div class="form-group">
           <label for="name">Имя</label>
           <input type="text" id="name" name="name" required minlength="2" placeholder="Как к вам обращаться">
@@ -267,6 +284,9 @@
           <label for="email">Email</label>
           <input type="email" id="email" name="email" placeholder="Для отправки КП">
         </div>
+      </div>
+      <div class="lead-form-panel" data-form-panel="product">
+      <div class="lead-form-grid">
         <div class="form-group">
           <label for="object_type">Объект</label>
           <select id="object_type" name="object_type">
@@ -300,6 +320,56 @@
         <div class="form-group form-group-full">
           <label for="comment">Комментарий</label>
           <textarea id="comment" name="comment" rows="2" placeholder="Адрес, сроки, пожелания"></textarea>
+        </div>
+      </div>
+      </div>
+      <div class="lead-form-panel hidden" data-form-panel="project">
+        <div class="lead-form-grid">
+          <div class="form-group">
+            <label for="project_company">Компания</label>
+            <input type="text" id="project_company" name="project_company" placeholder="ООО «Пример»">
+          </div>
+          <div class="form-group">
+            <label for="project_name">Название объекта</label>
+            <input type="text" id="project_name" name="project_name" placeholder="Склад, ТЦ, производство">
+          </div>
+          <div class="form-group form-group-full">
+            <label for="project_system">Тип системы</label>
+            <select id="project_system" name="project_system">
+              <option value="">Выберите направление</option>
+              <option>Встроенная система пожаротушения (комплекс)</option>
+              <option>АУПТ — автоматическая установка</option>
+              <option>Газовое пожаротушение</option>
+              <option>Порошковое / аэрозольное тушение</option>
+              <option>СОУЭ и оповещение</option>
+              <option>СПС — проектирование «под ключ»</option>
+              <option>Модернизация действующей системы</option>
+              <option>Другое</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="project_stage">Этап работ</label>
+            <select id="project_stage" name="project_stage">
+              <option value="">Что нужно</option>
+              <option>Обсуждение и ТЗ</option>
+              <option>Проектная документация</option>
+              <option>Поставка оборудования</option>
+              <option>Монтаж и ПНР</option>
+              <option>Комплекс «под ключ»</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="project_area">Площадь / зоны, м²</label>
+            <input type="text" id="project_area" name="project_area" placeholder="1200 или «3 этажа»">
+          </div>
+          <div class="form-group form-group-full">
+            <label for="project_address">Адрес объекта</label>
+            <input type="text" id="project_address" name="project_address" placeholder="Город, улица, корпус">
+          </div>
+          <div class="form-group form-group-full">
+            <label for="project_comment">Описание задачи / ТЗ</label>
+            <textarea id="project_comment" name="project_comment" rows="3" placeholder="Существующая система, сроки, требования заказчика, чертежи"></textarea>
+          </div>
         </div>
       </div>
       <div class="lead-modal-footer">

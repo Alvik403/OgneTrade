@@ -86,23 +86,53 @@ function getValidatedPhone(rawPhone, messageEl) {
   return null;
 }
 
-function setProductWidgetOpen(widget, open) {
-  if (!widget) return;
-  const head = widget.querySelector('.product-widget-head');
-  const details = widget.querySelector('.product-widget-details');
-  const toggleBtn = widget.querySelector('[data-toggle-product]');
-  const isOpen = open ?? !widget.classList.contains('is-expanded');
+function setLeadFormMode(mode) {
+  const normalized = mode === 'project' ? 'project' : 'product';
+  const form = document.getElementById('leadForm');
+  const modeField = document.getElementById('lead_form_mode');
+  const title = document.getElementById('leadModalTitle');
+  const subtitle = document.getElementById('leadModalSub');
+  const productChip = document.getElementById('leadProductChip');
 
-  if (isOpen) {
-    document.querySelectorAll('.product-widget.is-expanded').forEach(other => {
-      if (other !== widget) setProductWidgetOpen(other, false);
-    });
+  if (modeField) modeField.value = normalized;
+
+  document.querySelectorAll('.lead-form-tab').forEach(tab => {
+    const active = tab.dataset.formMode === normalized;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+
+  document.querySelectorAll('[data-form-panel]').forEach(panel => {
+    panel.classList.toggle('hidden', panel.dataset.formPanel !== normalized);
+  });
+
+  if (normalized === 'project') {
+    if (title) title.textContent = 'Заявка на проект СПС';
+    if (subtitle) subtitle.textContent = 'Опишите объект и систему — подготовим предложение по проекту';
+    if (productChip) {
+      productChip.textContent = 'Проект: встроенные системы пожаротушения';
+      productChip.classList.remove('hidden');
+    }
+    const productField = form?.querySelector('[name="product_name"]');
+    const productIdField = form?.querySelector('[name="product_id"]');
+    if (productField) productField.value = 'Проект СПС / встроенные системы';
+    if (productIdField) productIdField.value = '';
+  } else if (title && subtitle) {
+    const productName = form?.querySelector('[name="product_name"]')?.value || '';
+    title.textContent = productName ? 'Заказ модели' : 'Заявка на расчёт';
+    subtitle.textContent = productName
+      ? 'Укажите контакты — менеджер уточнит детали заказа'
+      : 'Оставьте контакты — менеджер подберёт комплект';
+    if (productChip) {
+      if (productName && productName !== 'Проект СПС / встроенные системы') {
+        productChip.textContent = productName;
+        productChip.classList.remove('hidden');
+      } else {
+        productChip.textContent = '';
+        productChip.classList.add('hidden');
+      }
+    }
   }
-
-  widget.classList.toggle('is-expanded', isOpen);
-  if (head) head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  if (details) details.hidden = !isOpen;
-  if (toggleBtn) toggleBtn.textContent = isOpen ? 'Свернуть' : 'Подробнее';
 }
 
 function openLeadModal(options = {}) {
@@ -111,7 +141,12 @@ function openLeadModal(options = {}) {
   const title = document.getElementById('leadModalTitle');
   if (!modal || !form) return;
 
-  const { productId = '', productName = '', objectType = '' } = options;
+  const {
+    productId = '',
+    productName = '',
+    objectType = '',
+    formMode = 'product',
+  } = options;
 
   form.reset();
   initPhoneInputs();
@@ -119,30 +154,20 @@ function openLeadModal(options = {}) {
   const productField = form.querySelector('[name="product_name"]');
   const productIdField = form.querySelector('[name="product_id"]');
   const objectTypeField = form.querySelector('[name="object_type"]');
-  const productChip = document.getElementById('leadProductChip');
-  const subtitle = document.getElementById('leadModalSub');
 
   if (productField) productField.value = productName || '';
   if (productIdField) productIdField.value = productId || '';
   if (objectTypeField && objectType) objectTypeField.value = objectType;
 
-  if (productChip) {
-    if (productName) {
+  setLeadFormMode(formMode === 'project' ? 'project' : 'product');
+
+  if (formMode !== 'project' && productName) {
+    const productChip = document.getElementById('leadProductChip');
+    if (productChip) {
       productChip.textContent = productName;
       productChip.classList.remove('hidden');
-    } else {
-      productChip.textContent = '';
-      productChip.classList.add('hidden');
     }
-  }
-
-  if (title) {
-    title.textContent = productName ? 'Заказ модели' : 'Заявка на расчёт';
-  }
-  if (subtitle) {
-    subtitle.textContent = productName
-      ? 'Укажите контакты — менеджер уточнит детали заказа'
-      : 'Оставьте контакты — менеджер подберёт комплект';
+    if (title) title.textContent = 'Заказ модели';
   }
 
   const msg = document.getElementById('formMessage');
@@ -205,10 +230,106 @@ async function submitLead(payload, messageEl) {
   }
 }
 
+function initProductCarousel() {
+  const viewport = document.getElementById('productCarouselViewport');
+  const track = document.getElementById('productCarouselTrack');
+  if (!viewport || !track) return;
+
+  let autoScroll = true;
+  let isDragging = false;
+  let dragMoved = false;
+  let activePointer = null;
+  let startX = 0;
+  let scrollStart = 0;
+  let resumeTimer = null;
+  const speed = 0.65;
+
+  const halfWidth = () => track.scrollWidth / 2;
+
+  const normalizeScroll = () => {
+    const half = halfWidth();
+    if (half <= 0) return;
+    while (viewport.scrollLeft >= half) viewport.scrollLeft -= half;
+    while (viewport.scrollLeft < 0) viewport.scrollLeft += half;
+  };
+
+  const pauseAuto = (resumeMs = 5000) => {
+    autoScroll = false;
+    if (resumeTimer) clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      autoScroll = true;
+    }, resumeMs);
+  };
+
+  const onPointerDown = (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (e.target.closest('.carousel-order')) return;
+
+    isDragging = true;
+    dragMoved = false;
+    activePointer = e.pointerId;
+    startX = e.clientX;
+    scrollStart = viewport.scrollLeft;
+    autoScroll = false;
+    viewport.classList.add('is-dragging');
+    viewport.setPointerCapture(e.pointerId);
+  };
+
+  const onPointerMove = (e) => {
+    if (!isDragging || e.pointerId !== activePointer) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 5) dragMoved = true;
+    viewport.scrollLeft = scrollStart - dx;
+    normalizeScroll();
+    if (dragMoved) e.preventDefault();
+  };
+
+  const endDrag = (e) => {
+    if (!isDragging || e.pointerId !== activePointer) return;
+    isDragging = false;
+    activePointer = null;
+    viewport.classList.remove('is-dragging');
+    if (viewport.hasPointerCapture?.(e.pointerId)) {
+      viewport.releasePointerCapture(e.pointerId);
+    }
+    normalizeScroll();
+    pauseAuto(4500);
+    if (dragMoved) {
+      setTimeout(() => { dragMoved = false; }, 0);
+    }
+  };
+
+  viewport.addEventListener('pointerdown', onPointerDown);
+  viewport.addEventListener('pointermove', onPointerMove);
+  viewport.addEventListener('pointerup', endDrag);
+  viewport.addEventListener('pointercancel', endDrag);
+
+  viewport.addEventListener('click', (e) => {
+    if (!dragMoved) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+
+  const tick = () => {
+    if (autoScroll && !isDragging && halfWidth() > viewport.clientWidth) {
+      viewport.scrollLeft += speed;
+      normalizeScroll();
+    }
+    requestAnimationFrame(tick);
+  };
+
+  requestAnimationFrame(tick);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   fetch('/api/public/track/view', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
 
   initPhoneInputs();
+  initProductCarousel();
+
+  document.querySelectorAll('.lead-form-tab').forEach(tab => {
+    tab.addEventListener('click', () => setLeadFormMode(tab.dataset.formMode || 'product'));
+  });
 
   document.querySelectorAll('[data-open-lead]').forEach(button => {
     button.addEventListener('click', async (e) => {
@@ -216,8 +337,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const productId = button.dataset.productId || '';
       const productName = button.dataset.productName || '';
       const objectType = button.dataset.objectType || '';
+      const formMode = button.dataset.formMode || 'product';
       if (productId) await trackProductClick(productId);
-      openLeadModal({ productId, productName, objectType });
+      openLeadModal({ productId, productName, objectType, formMode });
     });
   });
 
@@ -227,28 +349,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.faq-item').forEach(other => {
         if (other !== item) other.open = false;
       });
-    });
-  });
-
-  document.querySelectorAll('.product-widget').forEach(widget => {
-    const head = widget.querySelector('.product-widget-head');
-    const toggleBtn = widget.querySelector('[data-toggle-product]');
-
-    head?.addEventListener('click', (e) => {
-      if (e.target.closest('[data-open-lead]') || e.target.closest('[data-toggle-product]')) return;
-      setProductWidgetOpen(widget);
-    });
-
-    head?.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter' && e.key !== ' ') return;
-      e.preventDefault();
-      setProductWidgetOpen(widget);
-    });
-
-    toggleBtn?.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setProductWidgetOpen(widget);
     });
   });
 
@@ -280,17 +380,39 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const objectDetails = [
-      fd.get('object_type') ? `Тип объекта: ${fd.get('object_type')}` : '',
-      fd.get('area') ? `Площадь: ${fd.get('area')} м²` : '',
-      fd.get('quantity') ? `Количество: ${fd.get('quantity')}` : '',
-      fd.get('need_delivery') ? `Доставка/монтаж: ${fd.get('need_delivery')}` : '',
-    ].filter(Boolean);
-    const rawComment = (fd.get('comment') || '').trim();
-    const comment = [
-      objectDetails.length ? 'Данные для подбора:\n' + objectDetails.join('\n') : '',
-      rawComment ? 'Комментарий клиента:\n' + rawComment : '',
-    ].filter(Boolean).join('\n\n') || null;
+    const formMode = fd.get('form_mode') || 'product';
+    let comment = null;
+    let productName = fd.get('product_name') || null;
+
+    if (formMode === 'project') {
+      const projectDetails = [
+        'Тип заявки: проект СПС / встроенные системы',
+        fd.get('project_company') ? `Компания: ${fd.get('project_company')}` : '',
+        fd.get('project_name') ? `Объект: ${fd.get('project_name')}` : '',
+        fd.get('project_system') ? `Система: ${fd.get('project_system')}` : '',
+        fd.get('project_stage') ? `Этап: ${fd.get('project_stage')}` : '',
+        fd.get('project_area') ? `Площадь/зоны: ${fd.get('project_area')}` : '',
+        fd.get('project_address') ? `Адрес: ${fd.get('project_address')}` : '',
+      ].filter(Boolean);
+      const projectComment = (fd.get('project_comment') || '').trim();
+      comment = [
+        projectDetails.join('\n'),
+        projectComment ? `Описание задачи:\n${projectComment}` : '',
+      ].filter(Boolean).join('\n\n') || null;
+      productName = productName || 'Проект СПС / встроенные системы';
+    } else {
+      const objectDetails = [
+        fd.get('object_type') ? `Тип объекта: ${fd.get('object_type')}` : '',
+        fd.get('area') ? `Площадь: ${fd.get('area')} м²` : '',
+        fd.get('quantity') ? `Количество: ${fd.get('quantity')}` : '',
+        fd.get('need_delivery') ? `Доставка/монтаж: ${fd.get('need_delivery')}` : '',
+      ].filter(Boolean);
+      const rawComment = (fd.get('comment') || '').trim();
+      comment = [
+        objectDetails.length ? 'Данные для подбора:\n' + objectDetails.join('\n') : '',
+        rawComment ? 'Комментарий клиента:\n' + rawComment : '',
+      ].filter(Boolean).join('\n\n') || null;
+    }
 
     const phone = getValidatedPhone(fd.get('phone'), msg);
     if (!phone) return;
@@ -300,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
       phone,
       email: fd.get('email') || null,
       product_id: fd.get('product_id') || null,
-      product_name: fd.get('product_name') || null,
+      product_name: productName,
       comment,
       website: fd.get('website') || null,
     };

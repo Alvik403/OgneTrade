@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#f5f5f5"/>
+  <path d="M155 95 L245 95 L255 145 L200 175 L145 145 Z" fill="#991b1b"/>
+  <rect x="175" y="72" width="50" height="28" rx="6" fill="#374151"/>
+  <rect x="130" y="185" width="55" height="38" rx="6" fill="#f97316"/>
+  <rect x="215" y="185" width="55" height="38" rx="6" fill="#f97316"/>
+  <text x="200" y="255" text-anchor="middle" fill="#991b1b" font-family="sans-serif" font-size="14" font-weight="700">СИЗ</text>
+</svg>

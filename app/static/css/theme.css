@@ -2518,6 +2518,217 @@ th { background: #fef2f2; color: var(--red-dark); }
   color: var(--ink);
 }
 
+/* Product carousel (horizontal showcase) */
+.product-carousel-section {
+  padding: 3.5rem 0 2.5rem;
+  overflow: hidden;
+}
+
+.carousel-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.carousel-heading {
+  margin: 0;
+}
+
+.carousel-heading p {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  max-width: 36rem;
+}
+
+.carousel-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.product-carousel-viewport {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  touch-action: pan-x;
+}
+
+.product-carousel-viewport.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.product-carousel-viewport.is-dragging .carousel-card {
+  pointer-events: none;
+}
+
+.product-carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.product-carousel-track {
+  display: flex;
+  gap: 1.35rem;
+  width: max-content;
+  padding: 0.5rem 2rem 1.25rem;
+}
+
+.carousel-card {
+  flex: 0 0 min(420px, 90vw);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(127, 29, 29, 0.11);
+  overflow: hidden;
+  scroll-snap-align: start;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.carousel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 56px rgba(127, 29, 29, 0.15);
+}
+
+.product-carousel-viewport.is-dragging .carousel-card:hover {
+  transform: none;
+  box-shadow: 0 20px 48px rgba(127, 29, 29, 0.11);
+}
+
+.carousel-card-media {
+  background: radial-gradient(circle at center, #fff 0%, #fff7ed 55%, #fee2e2 100%);
+  padding: 1.35rem 1.5rem;
+}
+
+.carousel-card-media img {
+  width: 100%;
+  height: 260px;
+  object-fit: contain;
+  display: block;
+}
+
+.carousel-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.25rem 1.5rem 1.5rem;
+  gap: 0.55rem;
+}
+
+.carousel-card-body h3 {
+  margin: 0;
+  color: var(--red-dark);
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+.carousel-card-body p {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.96rem;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.carousel-price {
+  font-weight: 800;
+  color: var(--red);
+  font-size: 1.2rem;
+}
+
+.carousel-order {
+  margin-top: 0.5rem;
+  width: 100%;
+  text-align: center;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+}
+
+.carousel-card-extra {
+  border-color: #fdba74;
+}
+
+.carousel-card-project {
+  flex: 0 0 min(440px, 92vw);
+  background: linear-gradient(135deg, #240607 0%, #7f1d1d 52%, #dc2626 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.carousel-card-body-project {
+  justify-content: center;
+  min-height: 100%;
+  padding: 2rem 1.75rem;
+}
+
+.carousel-card-body-project h3 {
+  color: #fff;
+  font-size: 1.35rem;
+}
+
+.carousel-card-body-project p {
+  color: #fecaca;
+}
+
+.carousel-card-body-project .product-badge {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+/* Lead form tabs */
+.lead-form-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+  padding: 0.35rem;
+  border-radius: 14px;
+  background: #fff7ed;
+  border: 1px solid #fecaca;
+}
+
+.lead-form-tab {
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  background: transparent;
+  color: var(--red-dark);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.lead-form-tab.active {
+  background: #fff;
+  color: var(--red-dark);
+  box-shadow: 0 4px 14px rgba(127, 29, 29, 0.1);
+}
+
+.lead-form-contacts {
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.lead-form-panel.hidden {
+  display: none;
+}
+
+.modal-content.lead-modal {
+  width: min(560px, 100%);
+}
+
 @media (max-width: 900px) {
   .admin-layout { grid-template-columns: 1fr; }
   .admin-sidebar { padding: 1rem; }
@@ -2627,6 +2838,13 @@ th { background: #fef2f2; color: var(--red-dark); }
   .lead-row-product { grid-area: product; white-space: normal; }
   .lead-row-date { grid-area: date; }
   .lead-row-chevron { grid-area: chevron; }
+  .carousel-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .carousel-head-actions {
+    justify-content: space-between;
+  }
   .settings-fields,
   .users-create-form {
     grid-template-columns: 1fr;

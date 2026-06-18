@@ -1,4 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="OgneTrade">
-  <rect width="32" height="32" rx="6" fill="#c62828"/>
-  <path fill="#fff" d="M16 6c-3.3 0-6 2.7-6 6v2h12v-2c0-3.3-2.7-6-6-6zm-4 10v8h8v-8h-8zm2 10v2h4v-2h-4z"/>
+  <defs>
+    <linearGradient id="flame" x1="16" y1="8" x2="16" y2="24" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f97316"/>
+      <stop offset="1" stop-color="#dc2626"/>
+    </linearGradient>
+  </defs>
+  <path
+    d="M 12.5 23.5 Q 11 23.5 11 22 L 11 13.5 Q 11 8.5 16 8.5 Q 21 8.5 21 13.5 L 21 22 Q 21 23.5 19.5 23.5 Z"
+    fill="url(#flame)"
+    stroke="#fee2e2"
+    stroke-width="5"
+    stroke-linejoin="round"
+  />
 </svg>

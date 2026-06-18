@@ -4,7 +4,7 @@ YAGEL_PRODUCTS = [
         "article": "5106060100001",
         "volume_liters": 1,
         "price_from": 4900,
-        "image_url": "/static/images/products/yagel-1.png",
+        "image_url": "/static/images/products/yagel-1.jpg",
         "description": "Компактный гидрогелевый огнетушитель для автомобиля, дома и небольшого офиса.",
         "long_description": (
             "Огнетушитель гидрогелевый ЯГЕЛЬ объёмом 1 л предназначен для первичного тушения небольших очагов возгорания "
@@ -25,7 +25,7 @@ YAGEL_PRODUCTS = [
         "article": "5106060100006",
         "volume_liters": 6,
         "price_from": 12900,
-        "image_url": "/static/images/products/yagel-6.png",
+        "image_url": "/static/images/products/yagel-6.jpg",
         "description": "Универсальный гидрогелевый огнетушитель для офиса, магазина и серверной.",
         "long_description": (
             "Огнетушитель гидрогелевый ЯГЕЛЬ 6 л — оптимальный выбор для офисов, торговых залов, серверных и "
@@ -46,7 +46,7 @@ YAGEL_PRODUCTS = [
         "article": "5106060100045",
         "volume_liters": 45,
         "price_from": 89000,
-        "image_url": "/static/images/products/yagel-45.png",
+        "image_url": "/static/images/products/yagel-45.jpg",
         "description": "Передвижной гидрогелевый огнетушитель для склада, производства и парковок.",
         "long_description": (
             "Огнетушитель гидрогелевый ЯГЕЛЬ 45 л в передвижном исполнении предназначен для защиты складов, "
@@ -67,7 +67,7 @@ YAGEL_PRODUCTS = [
         "article": "5106060100200",
         "volume_liters": 200,
         "price_from": 249000,
-        "image_url": "/static/images/products/yagel-200.png",
+        "image_url": "/static/images/products/yagel-200.jpg",
         "description": "Крупный передвижной гидрогелевый огнетушитель для промышленных объектов.",
         "long_description": (
             "Огнетушитель гидрогелевый ЯГЕЛЬ 200 л — решение для крупных промышленных площадок, логистических "
@@ -82,5 +82,40 @@ YAGEL_PRODUCTS = [
             {"label": "Класс пожара", "value": "АВE"},
             {"label": "Конструкция", "value": "Передвижной"},
         ],
+    },
+]
+
+SHOWCASE_EXTRA = [
+    {
+        "slug": "fireball-3",
+        "title": "Fire Ball 3 кг — шар с тушением",
+        "category_label": "Fire Ball",
+        "price_from": 8900,
+        "image_url": "/static/images/products/fireball.jpg",
+        "description": "Автономный модуль тушения для серверных, электрощитовых и закрытых помещений.",
+    },
+    {
+        "slug": "fireball-5",
+        "title": "Fire Ball 5 кг — шар с тушением",
+        "category_label": "Fire Ball",
+        "price_from": 12900,
+        "image_url": "/static/images/products/fireball-5.jpg",
+        "description": "Увеличенный радиус защиты для складов, производств и парковок.",
+    },
+    {
+        "slug": "siz-kit-basic",
+        "title": "Комплект СИЗ пожарного — базовый",
+        "category_label": "СИЗ",
+        "price_from": 15600,
+        "image_url": "/static/images/products/siz-kit.png",
+        "description": "Костюм, перчатки, каска и очки для служб безопасности и пожарных постов.",
+    },
+    {
+        "slug": "siz-kit-pro",
+        "title": "Комплект СИЗ — усиленный",
+        "category_label": "СИЗ",
+        "price_from": 28900,
+        "image_url": "/static/images/products/siz-kit-pro.png",
+        "description": "Расширенный набор для промышленных объектов и складов с повышенной нагрузкой.",
     },
 ]
